@@ -5,7 +5,7 @@ static RegisterContextFactory register_Scaffold(
 
 bool PluginRootContext::onConfigure(size_t)
 {
-    LOG_DEBUG("IRA WAS HERE onConfigure");
+    LOG_ERROR("IRA WAS HERE onConfigure");
     return true;
 }
 
