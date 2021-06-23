@@ -1,0 +1,42 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: header-test-filter
+  namespace: isnyder
+spec:
+  workloadSelector:
+    labels:
+      app: nginx
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: SIDECAR_INBOUND
+      #proxy:
+      #  proxyVersion: '^1\.6.*'
+      listener:
+        portNumber: 80
+        filterChain:
+          filter:
+            name: envoy.http_connection_manager
+            subFilter:
+              name: envoy.router
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: envoy.filters.http.wasm
+        typed_config:
+          "@type": "type.googleapis.com/udpa.type.v1.TypedStruct"
+          type_url: "type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm"
+          value:
+            config:
+              configuration: "{\n  \"debug\": \"false\",\n  \"stat_prefix\": \"istio\"\n}\n"
+              #configuration:
+              #  "@type": "type.googleapis.com/google.protobuf.StringValue"
+              #  value: "dummy_value_here"
+              root_id: "header_test_filter"
+              vm_config:
+                vm_id: "header_test_filter"
+                code:
+                  local:
+                    filename: "/var/local/lib/wasm-filters/filter.wasm"
+                runtime: "envoy.wasm.runtime.v8"
