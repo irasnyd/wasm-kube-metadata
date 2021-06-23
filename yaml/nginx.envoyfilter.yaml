@@ -11,8 +11,8 @@ spec:
   - applyTo: HTTP_FILTER
     match:
       context: SIDECAR_INBOUND
-      #proxy:
-      #  proxyVersion: '^1\.6.*'
+      proxy:
+        proxyVersion: '^1\.6.*'
       listener:
         portNumber: 80
         filterChain:
@@ -29,10 +29,18 @@ spec:
           type_url: "type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm"
           value:
             config:
-              configuration: "{\n  \"debug\": \"false\",\n  \"stat_prefix\": \"istio\"\n}\n"
+              ### String ###
+              configuration: "dummy_value_here"
+              ### ProtoBuf ###
               #configuration:
               #  "@type": "type.googleapis.com/google.protobuf.StringValue"
               #  value: "dummy_value_here"
+              ### JSON ###
+              #configuration: |
+              #  {
+              #    "json": "dummy",
+              #    "value": "here"
+              #  }
               root_id: "header_test_filter"
               vm_config:
                 vm_id: "header_test_filter"
